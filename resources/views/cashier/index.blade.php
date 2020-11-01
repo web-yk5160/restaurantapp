@@ -61,7 +61,10 @@ $(document).ready(function() {
     SELECTED_TABLE_ID = $(this).data("id");
     SELECTED_TABLE_NAME = $(this).data("name");
     $("#selected-table").html('<br><h3>Table: ' + SELECTED_TABLE_NAME +
-      '</h3><hr>')
+      '</h3><hr>');
+    $.get('/cashier/getSaleDetailsByTable/' + SELECTED_TABLE_ID, function(data) {
+      $("#order-detail").html(data);
+    });
   });
 
   $("#list-menu").on('click', '.btn-menu', function() {
@@ -85,6 +88,38 @@ $(document).ready(function() {
       });
     }
   });
+
+  $("#order-detail").on('click', ".btn-confirm-order", function() {
+    var SaleId = $(this).data("id");
+    $.ajax({
+      type: "POST",
+      data: {
+        "_token": $('meta[name="csrf-token"]').attr('content'),
+        "sale_id": SaleId
+      },
+      url: "/cashier/confirmOrderStatus",
+      success: function(data) {
+        $("#order-detail").html(data);
+      }
+    });
+  });
+
+  // 売上詳細の削除
+  $("#order-detail").on('click', '.btn-delete-saledetail', function() {
+    var saleDetailId = $(this).data("id");
+    $.ajax({
+      type: "POST",
+      data: {
+        "_token": $('meta[name="csrf-token"]').attr('content'),
+        "saleDetail_id": saleDetailId
+      },
+      url: "/cashier/deleteSaleDetail",
+      success: function(data) {
+        $("#order-detail").html(data);
+      }
+    })
+  });
+
 });
 </script>
 @endsection
