@@ -160,7 +160,7 @@ class CashierController extends Controller
         $html .= '<h3>合計金額: '.number_format($sale->total_price).'円</h3>';
 
         if ($showBtnPayment) {
-            $html .= '<button data-id="'.$sale->id.'" class="btn btn-success btn-block btn-payment">支払い</button>';
+            $html .= '<button data-id="'.$sale->id.'" data-totalAmount="'.$sale->total_price.'" class="btn btn-success btn-block btn-payment" data-toggle="modal" data-target="#exampleModal">お支払い</button>';
         } else {
             $html .= '<button data-id="'.$sale->id.'" class="btn btn-warning btn-block btn-confirm-order">注文の確認</button>';
         }
@@ -195,5 +195,24 @@ class CashierController extends Controller
             $html = '選択されたテーブルに売上詳細情報がありません';
         }
         return $html;
+    }
+
+    public function savePayment(Request $request)
+    {
+        $saleID = $request->saleID;
+        $receivedAmount = $request->receivedAmount;
+        $paymentType = $request->paymentType;
+        // salesテーブルの売上の更新
+        $sale = Sale::find($saleID);
+        $sale->total_received = $receivedAmount;
+        $sale->change = $receivedAmount - $sale->total_price;
+        $sale->payment_type = $paymentType;
+        $sale->sale_status = "支払済";
+        $sale->save();
+        // tablesテーブルの更新
+        $table = Table::find($sale->table_id);
+        $table->status = "空";
+        $table->save();
+        return "/cashier";
     }
 }
