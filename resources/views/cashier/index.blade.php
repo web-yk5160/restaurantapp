@@ -158,6 +158,38 @@ $(document).ready(function() {
     })
   });
 
+  // 数量の追加
+  $("#order-detail").on('click', '.btn-increase-quantity', function() {
+    var saleDetailId = $(this).data("id");
+    $.ajax({
+      type: "POST",
+      data: {
+        "_token": $('meta[name="csrf-token"]').attr('content'),
+        "saleDetail_id": saleDetailId
+      },
+      url: "/cashier/increase-quantity",
+      success: function(data) {
+        $("#order-detail").html(data);
+      }
+    })
+  });
+
+  // 数量の削除
+  $("#order-detail").on('click', '.btn-decrease-quantity', function() {
+    var saleDetailId = $(this).data("id");
+    $.ajax({
+      type: "POST",
+      data: {
+        "_token": $('meta[name="csrf-token"]').attr('content'),
+        "saleDetail_id": saleDetailId
+      },
+      url: "/cashier/decrease-quantity",
+      success: function(data) {
+        $("#order-detail").html(data);
+      }
+    })
+  });
+
   // お支払いボタンをクリック
   $("#order-detail").on('click', '.btn-payment', function() {
     var totalAmount = $(this).attr('data-totalAmount');
