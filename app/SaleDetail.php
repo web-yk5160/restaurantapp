@@ -8,6 +8,6 @@ class SaleDetail extends Model
 {
     public function sale()
     {
-        return $this->belongs(Sale::class);
+        return $this->belongsTo(Sale::class);
     }
 }

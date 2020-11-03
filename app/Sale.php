@@ -8,6 +8,6 @@ class Sale extends Model
 {
     public function saleDetails()
     {
-        return $this->has_many(saleDetail::class);
+        return $this->hasMany(saleDetail::class);
     }
 }
